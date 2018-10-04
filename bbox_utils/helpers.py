@@ -1,4 +1,6 @@
-# -*- coding: utf-8 -*-
+"""
+Bounding box utility functions.
+"""
 import torch
 
 
