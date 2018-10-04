@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
-from layers import *
+from modules import L2Norm, PriorBox, Detect
 from data import voc, coco
 import os
 
@@ -30,7 +30,7 @@ class SSD(nn.Module):
         self.phase = phase
         self.num_classes = num_classes
         self.cfg = (coco, voc)[num_classes == 21]
-        self.priorbox = PriorBox(self.cfg)
+        self.priorbox = PriorBox(**self.cfg)
         self.priors = Variable(self.priorbox.forward(), volatile=True)
         self.size = size
 

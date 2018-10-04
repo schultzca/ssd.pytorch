@@ -1,6 +1,6 @@
 import torch
 
-from box_utils import decode, nms
+from bbox_utils.helpers import decode, nms
 
 
 class Detect:

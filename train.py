@@ -1,19 +1,19 @@
-from data import *
-from utils.augmentations import SSDAugmentation
-from layers.modules import MultiBoxLoss
-from ssd import build_ssd
-import os
-import sys
-import time
-import torch
-from torch.autograd import Variable
-import torch.nn as nn
-import torch.optim as optim
-import torch.backends.cudnn as cudnn
-import torch.nn.init as init
-import torch.utils.data as data
-import numpy as np
 import argparse
+import os
+import time
+
+import torch.backends.cudnn as cudnn
+import torch.nn as nn
+import torch.nn.init as init
+import torch.optim as optim
+import torch.utils.data as data
+import visdom
+from torch.autograd import Variable
+
+from bbox_utils.augmentations import SSDAugmentation
+from data import *
+from models.ssd import build_ssd
+from modules.multibox_loss import MultiBoxLoss
 
 
 def str2bool(v):
@@ -53,7 +53,6 @@ parser.add_argument('--save_folder', default='weights/',
                     help='Directory for saving checkpoint models')
 args = parser.parse_args()
 
-
 if torch.cuda.is_available():
     if args.cuda:
         torch.set_default_tensor_type('torch.cuda.FloatTensor')
@@ -89,7 +88,6 @@ def train():
                                                          MEANS))
 
     if args.visdom:
-        import visdom
         viz = visdom.Visdom()
 
     ssd_net = build_ssd('train', cfg['min_dim'], cfg['num_classes'])
@@ -160,7 +158,7 @@ def train():
         if iteration in cfg['lr_steps']:
             step_index += 1
             adjust_learning_rate(optimizer, args.gamma, step_index)
-        
+
         try:
             # load train data
             images, targets = next(batch_iterator)
